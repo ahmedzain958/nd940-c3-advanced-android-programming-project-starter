@@ -67,14 +67,13 @@ class MainActivity : AppCompatActivity() {
                 cursor.close()
                 when (currentState) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        notificationManager?.sendNotification(context, context.getString(
-                            when (id) {
+                        notificationManager?.sendNotification(context,
+                            context.getString(
+                                when (id) {
                                 option1 -> R.string.option1
                                 option2 -> R.string.option2
                                 else -> R.string.option3
-                            }
-                        ),
-                            "suc"
+                            }),"success"
                         )
                     }
                     DownloadManager.STATUS_FAILED -> {
@@ -130,10 +129,11 @@ class MainActivity : AppCompatActivity() {
 
     fun NotificationManager.sendNotification(context: Context, path: String, state: String) {
 
-        val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra(File, path)
-        intent.putExtra(State, state)
-        val awaiting = PendingIntent.getActivity(
+        val intent = Intent(context, DetailActivity::class.java).also {
+            it.putExtra(File, path)
+            it.putExtra(STATUS, state)
+        }
+        val pendingIntent = PendingIntent.getActivity(
             context, ID, intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -142,10 +142,10 @@ class MainActivity : AppCompatActivity() {
             context, context.getString(R.string.channel)
         ).setSmallIcon(R.drawable.ic_assistant_black_24dp)
             .setContentText(path).setContentTitle(context.getString(R.string.notification_title))
-            .setContentIntent(awaiting).setAutoCancel(true)
+            .setContentIntent(pendingIntent).setAutoCancel(true)
             .addAction(R.drawable.ic_assistant_black_24dp,
                 context.getString(R.string.notify_state),
-                awaiting)
+                pendingIntent)
         notify(ID, builder.build())
     }
 

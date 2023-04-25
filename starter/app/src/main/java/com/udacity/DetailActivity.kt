@@ -16,7 +16,7 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val notify = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java)
         val download = intent.extras?.getString(File)
-        val status = intent.extras?.getString(State)
+        val status = intent.extras?.getString(STATUS)
         Detail_FileName.text = download
         Detail_Status.text = status
         when(status){
