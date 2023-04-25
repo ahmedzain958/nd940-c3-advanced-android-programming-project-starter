@@ -61,8 +61,11 @@
     <com.udacity.LoadingButton
         android:id="@+id/custom_button"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="160dp"
+        app:buttonColor="@color/colorPrimary"
         android:layout_margin="20dp"
+        app:textColor="@color/white"
+        app:buttonText="@string/download"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
