@@ -28,9 +28,12 @@ class LoadingButton @JvmOverloads constructor(
     private var loadingText = ""
     private var loadingProgress = 0f
 
+    private var isClicked= false
+
     private var widthR= 0f
 
     private var valueAnimator = ValueAnimator()
+    private var beginAngle=0f
     private var endAngle=0f
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
@@ -39,6 +42,7 @@ class LoadingButton @JvmOverloads constructor(
                 invalidate()
                 state(ButtonState.Loading)
                 buttonText = resources.getString(R.string.button_loading)
+                isClicked = true
             }
             ButtonState.Loading -> {
                 buttonText = resources.getString(R.string.download)
@@ -49,8 +53,8 @@ class LoadingButton @JvmOverloads constructor(
             ButtonState.Completed -> {
                 buttonPaint.color = buttonColor
                 buttonText = loadingText
+                isClicked = false
                 invalidate()
-
             }
         }
     }
@@ -88,16 +92,15 @@ class LoadingButton @JvmOverloads constructor(
         // Draw button background
         buttonPaint.color = buttonColor
         canvas.drawRect(0f, height.toFloat() / 2, width.toFloat(), 350f, buttonPaint)
-
-
-        /* textPaint.color = textColor
-         canvas.drawText(
-             buttonText,
-             widthSize.toFloat() / 2,
-             ((height + 180) / 2).toFloat(),
-             textPaint
-         )*/
         drawText(canvas, widthSize.toFloat() / 2, ((height + 180) / 2).toFloat(), textPaint)
+        if (isClicked){
+            buttonPaint.color = loadingButtonColor
+            canvas.drawRect(0f, height.toFloat() / 2, widthR.toFloat(), measuredHeight.toFloat(), buttonPaint)
+            buttonPaint.color = Color.YELLOW
+            canvas.drawArc((widthSize - 180f), (heightSize / 2) - 50f, (widthSize - 100f), (heightSize / 2) + 50f,
+                beginAngle, endAngle, true, buttonPaint
+            )
+        }
     }
 
     private fun startButtonAnimation() {

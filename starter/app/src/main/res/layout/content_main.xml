@@ -66,6 +66,8 @@
         android:layout_margin="20dp"
         app:textColor="@color/white"
         app:buttonText="@string/download"
+        app:loadingText="@string/download"
+        app:loadingColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
