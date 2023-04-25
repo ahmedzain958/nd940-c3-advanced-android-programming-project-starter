@@ -20,13 +20,13 @@ class DetailActivity : AppCompatActivity() {
         Detail_FileName.text = download
         Detail_Status.text = status
         when(status){
-            "suc" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
-            "fail" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
+            "succeeded" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
+            "failed" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
         }
         btn.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        notify?.cansel()
+        notify?.cancelAll()
     }
 
 }

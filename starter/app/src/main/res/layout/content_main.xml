@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="Glide - Image Loading Library by BumpTech"
+            android:text="@string/option1"
             android:textSize="24sp" />
 
         <RadioButton
@@ -44,14 +44,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="LoadApp - Current repository by Udacity"
+            android:text="@string/option2"
             android:textSize="24sp" />
 
         <RadioButton
             android:id="@+id/radioButton3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Retrofit - Type-safe HTTp client for Android and java by Square, Inc"
+            android:text="@string/option3"
             android:layout_marginBottom="20dp"
             android:textSize="24sp" />
 
@@ -67,6 +67,7 @@
         app:textColor="@color/white"
         app:buttonText="@string/download"
         app:loadingText="@string/download"
+        app:circleColor="@color/yellow"
         app:loadingColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

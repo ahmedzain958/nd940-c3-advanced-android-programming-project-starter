@@ -3,7 +3,6 @@ package com.udacity
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.INFINITE
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -40,15 +39,15 @@ class LoadingButton @JvmOverloads constructor(
         when(new){
             ButtonState.Clicked -> {
                 invalidate()
-                state(ButtonState.Loading)
                 buttonText = resources.getString(R.string.button_loading)
+                state(ButtonState.Loading)
                 isClicked = true
             }
             ButtonState.Loading -> {
                 buttonText = resources.getString(R.string.download)
 
                 startButtonAnimation()
-                myCircle()
+                startCircleAnimation()
             }
             ButtonState.Completed -> {
                 buttonPaint.color = buttonColor
@@ -70,7 +69,7 @@ class LoadingButton @JvmOverloads constructor(
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
-        textSize = 60.0f
+        textSize = 34.0f
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
@@ -92,13 +91,20 @@ class LoadingButton @JvmOverloads constructor(
         // Draw button background
         buttonPaint.color = buttonColor
         canvas.drawRect(0f, height.toFloat() / 2, width.toFloat(), 350f, buttonPaint)
-        drawText(canvas, widthSize.toFloat() / 2, ((height + 180) / 2).toFloat(), textPaint)
+        drawText(canvas, widthSize.toFloat() / 2, ((height + 120) / 2).toFloat(), textPaint)
         if (isClicked){
             buttonPaint.color = loadingButtonColor
             canvas.drawRect(0f, height.toFloat() / 2, widthR.toFloat(), measuredHeight.toFloat(), buttonPaint)
-            buttonPaint.color = Color.YELLOW
-            canvas.drawArc((widthSize - 180f), (heightSize / 2) - 50f, (widthSize - 100f), (heightSize / 2) + 50f,
-                beginAngle, endAngle, true, buttonPaint
+            circlePaint.color = circleColor
+            canvas.drawArc(
+                (widthSize - 200f),
+                (heightSize / 2) - 50f,
+                (widthSize - 100f),
+                (heightSize / 2) + 50f,
+                beginAngle,
+                endAngle,
+                true,
+                circlePaint
             )
         }
     }
@@ -112,18 +118,19 @@ class LoadingButton @JvmOverloads constructor(
                 widthR = animate.animatedValue as Float
                 invalidate()
             }
-            duration = 2300
+            duration = ANIMATION_DURATION
             start()
         }
+
     }
-    private fun myCircle(){
+    private fun startCircleAnimation(){
         valueAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
             addUpdateListener { animate ->
                 animate.interpolator = AccelerateInterpolator()
                 endAngle = animate.animatedValue as Float
                 invalidate()
             }
-            duration = 2300
+            duration = ANIMATION_DURATION
             start()
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animation: Animator?) {
@@ -139,30 +146,16 @@ class LoadingButton @JvmOverloads constructor(
     fun state(State: ButtonState){
         buttonState = State
     }
-    private fun drawCircle(canvas: Canvas) {
-        val circleLeft = (widthSize.toFloat() + textPaint.measureText(buttonText)) / 2 + heightSize.toFloat() * 0.1f
-        val circleTop = heightSize.toFloat() * 0.3f
-        val circleRight = circleLeft + heightSize.toFloat() * 0.4f
-        val circleBottom = heightSize.toFloat() - heightSize.toFloat() * 0.3f
-
+   /* private fun drawCircle(canvas: Canvas) {
+        val circleLeft = (widthSize.toFloat() heightSize.toFloat() * 0.1f + textPaint.measureText(buttonText)) / 2
         circlePaint.color = circleColor
-        canvas.drawArc(
-            circleLeft,
-            circleTop,
-            circleRight,
-            circleBottom,
-            0F,
-            360F * loadingProgress,
-            true,
-            circlePaint
-        )
-    }
+    }*/
     private fun drawText(canvas: Canvas, x: Float, y: Float, textPaint: Paint) {
         textPaint.color = textColor
         canvas.drawText(
             buttonText,
-            widthSize.toFloat() / 2,
-            ((height + 180) / 2).toFloat(),
+            x,
+           y,
             textPaint
         )
     }
