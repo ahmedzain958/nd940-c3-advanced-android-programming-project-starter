@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -31,7 +32,16 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
-            download()
+            if(radioGroup.checkedRadioButtonId != -1) {
+                custom_button.state(ButtonState.Clicked)
+            }
+            when(radioGroup.checkedRadioButtonId){
+                R.id.radioButton1-> download()
+                R.id.radioButton2-> download()
+                R.id.radioButton3-> download()
+                else -> Toast.makeText(this,"Please select a choice to download",
+                    Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -42,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download() {
-        val request =
+        /*val request =
             DownloadManager.Request(Uri.parse(URL))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
@@ -52,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
-            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+            downloadManager.enqueue(request)// enqueue puts the download request in the queue.*/
     }
 
     companion object {
