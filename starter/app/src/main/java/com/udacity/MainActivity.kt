@@ -29,16 +29,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
     private lateinit var downloader: DownloadManager
 
-    private var option1: Long = 0
-    private var option2: Long = 0
-    private var option3: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         downloader = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        createNotificationChannel(getString(R.string.channel),
-            getString(R.string.notification_title))
+        createNotificationChannel(
+            getString(R.string.channel),
+            getString(R.string.notification_title)
+        )
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
@@ -49,15 +48,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.radioButton1 -> download("https://github.com/bumptech/glide")
                 R.id.radioButton2 -> download("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter")
                 R.id.radioButton3 -> download("https://github.com/square/retrofit")
-                else -> Toast.makeText(this, "Please select a choice to download",
-                    Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(
+                    this,
+                    "Please select the file to download",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
             val cursor = downloader.query(DownloadManager.Query().setFilterById(id!!))
             if (cursor.moveToNext()) {
                 val currentState =
@@ -67,23 +69,27 @@ class MainActivity : AppCompatActivity() {
                 cursor.close()
                 when (currentState) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        notificationManager?.sendNotification(context,
+                        notificationManager?.sendNotification(
+                            context,
                             context.getString(
-                                when (id) {
-                                option1 -> R.string.option1
-                                option2 -> R.string.option2
-                                else -> R.string.option3
-                            }),"success"
+                                when (radioGroup.checkedRadioButtonId) {
+                                    R.id.radioButton1 -> R.string.option1
+                                    R.id.radioButton2 -> R.string.option2
+                                    else -> R.string.option3
+                                }
+                            ), "success"
                         )
                     }
                     DownloadManager.STATUS_FAILED -> {
-                        notificationManager?.sendNotification(context, context.getString(
-                            when (id) {
-                                option1 -> R.string.option1
-                                option2 -> R.string.option2
-                                else -> R.string.option3
-                            }
-                        ),
+                        notificationManager?.sendNotification(
+                            context,
+                            context.getString(
+                                when (radioGroup.checkedRadioButtonId) {
+                                    R.id.radioButton1 -> R.string.option1
+                                    R.id.radioButton2 -> R.string.option2
+                                    else -> R.string.option3
+                                }
+                            ),
                             "fail"
                         )
                     }
@@ -94,29 +100,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun download(url: String) {
         val request =
-            DownloadManager.Request(Uri.parse("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"))
+            DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
-        when (url) {
-            "https://github.com/bumptech/glide" -> option1 = downloader.enqueue(request)
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter" -> option2 =
-                downloader.enqueue(request)
-            "https://github.com/square/retrofit" -> option3 = downloader.enqueue(request)
-        }
+        downloader.enqueue(request)
     }
 
     private fun createNotificationChannel(channelId: String, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notifyChannel = NotificationChannel(
-                channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
-                .apply {
-                    setShowBadge(false)
-                }
+                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
+            )
             notifyChannel.let {
                 it.enableLights(true)
+                it.setShowBadge(false)
                 it.enableVibration(true)
                 it.lightColor = Color.CYAN
                 it.description = applicationContext.getString(R.string.notification_description)
@@ -127,26 +127,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun NotificationManager.sendNotification(context: Context, path: String, state: String) {
+    fun NotificationManager.sendNotification(context: Context, fileName: String, state: String) {
 
         val intent = Intent(context, DetailActivity::class.java).also {
-            it.putExtra(File, path)
+            it.putExtra(FILE_NAME, fileName)
             it.putExtra(STATUS, state)
         }
         val pendingIntent = PendingIntent.getActivity(
-            context, ID, intent,
+            context, REQUEST_CODE, intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val builder = NotificationCompat.Builder(
             context, context.getString(R.string.channel)
-        ).setSmallIcon(R.drawable.ic_assistant_black_24dp)
-            .setContentText(path).setContentTitle(context.getString(R.string.notification_title))
-            .setContentIntent(pendingIntent).setAutoCancel(true)
-            .addAction(R.drawable.ic_assistant_black_24dp,
-                context.getString(R.string.notify_state),
-                pendingIntent)
-        notify(ID, builder.build())
+        )
+            .setSmallIcon(R.drawable.download)
+            .setContentText(fileName)
+            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .addAction(
+                R.drawable.download,
+                context.getString(R.string.go_to_detail),
+                pendingIntent
+            )
+        notify(REQUEST_CODE, builder.build())
     }
 
     companion object {

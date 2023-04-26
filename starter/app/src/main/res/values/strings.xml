@@ -16,7 +16,7 @@
     <string name="download">Download</string>
     <string name="channel">Download</string>
 
-    <string name="notify_state">detail</string>
+    <string name="go_to_detail">detail</string>
 
 
     <string name="option1">Glide - Image Loading Library by BumpTech</string>

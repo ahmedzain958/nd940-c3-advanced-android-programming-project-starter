@@ -15,15 +15,15 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
         val notify = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java)
-        val download = intent.extras?.getString(File)
+        val download = intent.extras?.getString(FILE_NAME)
         val status = intent.extras?.getString(STATUS)
-        Detail_FileName.text = download
-        Detail_Status.text = status
+        filename_text.text = download
+        status_text.text = status
         when(status){
-            "succeeded" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
-            "failed" -> Detail_Status.setTextColor(getColor(R.color.colorAccent))
+            "succeeded" -> status_text.setTextColor(getColor(R.color.colorAccent))
+            "failed" -> status_text.setTextColor(getColor(R.color.colorAccent))
         }
-        btn.setOnClickListener {
+        done_button.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
         notify?.cancelAll()
